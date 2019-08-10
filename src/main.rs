@@ -1,9 +1,7 @@
 extern crate regex;
 extern crate glob;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader};
-use std::fs::{self, DirEntry};
-use std::path::Path;
+use std::io::{BufRead, BufReader};
 use regex::Regex;
 use glob::glob;
 
@@ -41,5 +39,12 @@ fn file_grep(reg_str:&str, path: &str) -> Box<Iterator<Item = String>> {
         .map(|x| x.unwrap())
         .filter(move |x| re.is_match(x));
     Box::new(result)
-        // .fold("".to_string(), |mut result, x| {result.push_str(&x);result.push_str("\n");result});
+}
+
+#[test]
+fn file_grep_test(){
+    let result = file_grep("test", "tests/sample/test.txt")
+        .fold("".to_string(), |mut result, x| {result.push_str(&x);result.push_str("\n");result});
+    let valid_str = "test\ntest2\n";
+    assert_eq!(result, valid_str);
 }
